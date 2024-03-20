@@ -1,0 +1,43 @@
+version: '3.10'
+
+services:
+  django:
+    build: .
+    ports:
+      - '8000:8000'
+    container_name: Dockerfile
+    volumes:
+      - ./djangodocker/app
+    depends_on:
+      - db
+    networks:
+      - itsv
+
+  db:
+    image: mysql
+    environment:
+      MYSQL_DATABASE: 'baseDatos'
+      MYSQL_USER: 'itsv'
+      MYSQL_PASSWORD: 'itsv'
+      MYSQL_ROOT_PASSWORD: 'itsv'
+      container_name: 'mysql'
+    volumes:
+      - ./dbdata:/var/lib/mysql
+    networks:
+      itsv:
+        aliases:
+          - mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_PASSWORD: 'itsv'
+      PMA_ARBITRARY: 1
+    ports:
+      - "8080:80"
+    networks:
+      - itsv
+
+networks:
+  itsv:
+    driver: bridge
